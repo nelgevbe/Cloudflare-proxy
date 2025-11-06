@@ -10,7 +10,7 @@ let subPath = 'link';     // 节点订阅路径,不修改将使用uuid作为订�
 let password = '123456';  // 主页密码,建议修改或添加 PASSWORD环境变量
 let proxyIP = '13.230.34.30';  // proxyIP
 let yourUUID = '5dc15e15-f285-4a9d-959b-0e4fbdd77b63'; // UUID,建议修改或添加环境便量
-let disabletro = false;  // 是否关闭trojan, 设置为true时关闭，false开启 
+let disabletro = true;  // 是否关闭trojan, 设置为true时关闭，false开启 
 
 // CDN 
 let cfip = [ // 格式:优选域名:端口#备注名称、优选IP:端口#备注名称、[ipv6优选]:端口#备注名称、优选域名#备注 
@@ -207,6 +207,11 @@ export default {
 	 */
     async fetch(request, env, ctx) {
         try {
+			
+            password = env.PASSWORD || env.PASSWD || env.password || password;
+			yourUUID = env.UUID || env.uuid || yourUUID;
+            subPath = env.SUB_PATH || env.subpath || subPath;
+            disabletro = env.DISABLE_TROJAN || env.CLOSE_TROJAN || disabletro;			
 
 			if (subPath === 'link' || subPath === '') {
 				subPath = yourUUID;
@@ -216,10 +221,6 @@ export default {
                 const servers = (env.PROXYIP || env.proxyip || env.proxyIP).split(',').map(s => s.trim());
                 proxyIP = servers[0]; 
             }
-            password = env.PASSWORD || env.PASSWD || env.password || password;
-            subPath = env.SUB_PATH || env.subpath || subPath;
-            yourUUID = env.UUID || env.uuid || yourUUID;
-            disabletro = env.DISABLE_TROJAN || env.CLOSE_TROJAN || disabletro;
             
             const url = new URL(request.url);
             const pathname = url.pathname;
@@ -1335,11 +1336,11 @@ function getMainPageContent(url, baseUrl) {
             </div>
             <div class="info-item">
                 <span class="label">Clash订阅地址</span>
-                <span class="value">https://sublink.eooce.com/clash?config=${baseUrl}/${subPath}</span>
+                <span class="value">https://sublink.cyo.qzz.io/clash?config=${baseUrl}/${subPath}</span>
             </div>
             <div class="info-item">
                 <span class="label">singbox订阅地址</span>
-                <span class="value">https://sublink.eooce.com/singbox?config=${baseUrl}/${subPath}</span>
+                <span class="value">https://sublink.cyo.qzz.io/singbox?config=${baseUrl}/${subPath}</span>
             </div>
         </div>
         
@@ -1422,7 +1423,7 @@ function getMainPageContent(url, baseUrl) {
         }
         
         function copyClashSubscription() {
-            const clashUrl = 'https://sublink.eooce.com/clash?config=${baseUrl}/${subPath}';
+            const clashUrl = 'https://sublink.cyo.qzz.io/clash?config=${baseUrl}/${subPath}';
             navigator.clipboard.writeText(clashUrl).then(() => {
                 showToast('Clash订阅链接已复制到剪贴板!');
             }).catch(() => {
@@ -1437,7 +1438,7 @@ function getMainPageContent(url, baseUrl) {
         }
         
         function copySingboxSubscription() {
-            const singboxUrl = 'https://sublink.eooce.com/singbox?config=${baseUrl}/${subPath}';
+            const singboxUrl = 'https://sublink.cyo.qzz.io/singbox?config=${baseUrl}/${subPath}';
             navigator.clipboard.writeText(singboxUrl).then(() => {
                 showToast('singbox订阅链接已复制到剪贴板!');
             }).catch(() => {
